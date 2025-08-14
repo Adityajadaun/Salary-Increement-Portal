@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Increment Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2>💼 Salary Portal</h2>
+        </div>
+        <div class="navbar-nav">
+            <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+            <button class="nav-btn" data-section="employees">Employees</button>
+            <button class="nav-btn" data-section="increments">Increments</button>
+            <button class="nav-btn" data-section="reports">Reports</button>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section active">
+            <div class="section-header">
+                <h1>Dashboard</h1>
+                <p>Overview of your organization's salary management</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <h3 id="total-employees">0</h3>
+                        <p>Total Employees</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <h3 id="avg-salary">$0</h3>
+                        <p>Average Salary</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-content">
+                        <h3 id="total-increments">0</h3>
+                        <p>Total Increments</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-content">
+                        <h3 id="avg-increment">0%</h3>
+                        <p>Avg Increment</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="dashboard-card">
+                    <h3>Salary Distribution</h3>
+                    <div class="chart-container" style="position: relative; height: 300px;">
+                        <canvas id="salaryChart"></canvas>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Recent Increments</h3>
+                    <div id="recent-increments" class="recent-list">
+                        <!-- Recent increments will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employees Section -->
+        <div id="employees" class="section">
+            <div class="section-header">
+                <h1>Employee Management</h1>
+                <button class="btn btn--primary" id="add-employee-btn">+ Add Employee</button>
+            </div>
+
+            <div class="search-filter-bar">
+                <input type="text" class="form-control search-input" id="employee-search" placeholder="Search employees...">
+                <select class="form-control" id="department-filter">
+                    <option value="">All Departments</option>
+                </select>
+                <button class="btn btn--secondary" id="export-employees">Export CSV</button>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table" id="employees-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Position</th>
+                            <th>Salary</th>
+                            <th>Hire Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employees-tbody">
+                        <!-- Employee rows will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Increments Section -->
+        <div id="increments" class="section">
+            <div class="section-header">
+                <h1>Salary Increments</h1>
+                <button class="btn btn--primary" id="add-increment-btn">+ Add Increment</button>
+            </div>
+
+            <div class="search-filter-bar">
+                <input type="text" class="form-control search-input" id="increment-search" placeholder="Search increments...">
+                <select class="form-control" id="employee-filter">
+                    <option value="">All Employees</option>
+                </select>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table" id="increments-table">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Old Salary</th>
+                            <th>New Salary</th>
+                            <th>Increment %</th>
+                            <th>Reason</th>
+                            <th>Effective Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="increments-tbody">
+                        <!-- Increment rows will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div id="reports" class="section">
+            <div class="section-header">
+                <h1>Reports & Analytics</h1>
+            </div>
+
+            <div class="reports-grid">
+                <div class="report-card">
+                    <h3>Department-wise Salary Report</h3>
+                    <div class="chart-container" style="position: relative; height: 300px;">
+                        <canvas id="departmentChart"></canvas>
+                    </div>
+                </div>
+                <div class="report-card">
+                    <h3>Monthly Increment Trends</h3>
+                    <div class="chart-container" style="position: relative; height: 300px;">
+                        <canvas id="incrementTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="export-section">
+                <h3>Export Reports</h3>
+                <div class="export-buttons">
+                    <button class="btn btn--secondary" id="export-all-data">Export All Data</button>
+                    <button class="btn btn--secondary" id="export-increments">Export Increments</button>
+                    <button class="btn btn--secondary" id="export-salary-report">Export Salary Report</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Modal -->
+    <div id="employee-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="employee-modal-title">Add Employee</h3>
+                <button class="close-btn" id="close-employee-modal">&times;</button>
+            </div>
+            <form id="employee-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" id="emp-id" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="emp-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="emp-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-control" id="emp-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <select class="form-control" id="emp-department" required>
+                            <option value="">Select Department</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Position</label>
+                        <input type="text" class="form-control" id="emp-position" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hire Date</label>
+                        <input type="date" class="form-control" id="emp-hire-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Initial Salary</label>
+                        <input type="number" class="form-control" id="emp-salary" min="0" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Address</label>
+                        <textarea class="form-control" id="emp-address" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn--secondary" id="cancel-employee">Cancel</button>
+                    <button type="submit" class="btn btn--primary" id="save-employee">Save Employee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Increment Modal -->
+    <div id="increment-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Salary Increment</h3>
+                <button class="close-btn" id="close-increment-modal">&times;</button>
+            </div>
+            <form id="increment-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Employee</label>
+                        <select class="form-control" id="inc-employee" required>
+                            <option value="">Select Employee</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Current Salary</label>
+                        <input type="number" class="form-control" id="inc-current-salary" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">New Salary</label>
+                        <input type="number" class="form-control" id="inc-new-salary" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Increment %</label>
+                        <input type="text" class="form-control" id="inc-percentage" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Reason</label>
+                        <select class="form-control" id="inc-reason" required>
+                            <option value="">Select Reason</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Effective Date</label>
+                        <input type="date" class="form-control" id="inc-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Approved By</label>
+                        <input type="text" class="form-control" id="inc-approved-by" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" id="inc-notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn--secondary" id="cancel-increment">Cancel</button>
+                    <button type="submit" class="btn btn--primary">Save Increment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal hidden">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>Confirm Delete</h3>
+                <button class="close-btn" id="close-delete-modal">&times;</button>
+            </div>
+            <p id="delete-message">Are you sure you want to delete this item?</p>
+            <div class="form-actions">
+                <button type="button" class="btn btn--secondary" id="cancel-delete">Cancel</button>
+                <button type="button" class="btn btn--primary delete-confirm" id="confirm-delete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="toast" class="toast hidden">
+        <span id="toast-message"></span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
